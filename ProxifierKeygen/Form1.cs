@@ -20,8 +20,7 @@ namespace ProxifierKeygen
         private void Form1_Load(object sender, EventArgs e)
         {
             comboBox1.SelectedIndex = 0;
-            textBoxKeyOutput.Text = Keygen.GenerateKey();
-            Clipboard.SetText(textBoxKeyOutput.Text);
+            buttonGenerate_Click(sender, e);
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)

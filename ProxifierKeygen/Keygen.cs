@@ -31,11 +31,11 @@ namespace ProxifierKeygen
                 {
                     result += 18;
                 }
-                else if (c <= 57) // 0-9
+                else if (c <= 57) // '0' to '9'
                 {
                     result += (uint)c - 48;
                 }
-                else // A-Z (excluding what's above, obviously)
+                else // 'A' to 'V'
                 {
                     result += (uint)c - 55;
                 }
@@ -49,7 +49,6 @@ namespace ProxifierKeygen
             for (int i = 0; i < length; i++)
             {
                 uint tmp = value % 32;
-                value -= tmp;
                 value /= 32;
 
                 if (tmp == 0)
@@ -106,8 +105,8 @@ namespace ProxifierKeygen
         {
             string charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             Random rnd = new Random();
-            int param1 = rnd.Next(0x2580, 0xFFFF) /* (param1 & 0xFFFF) < 0x2580 ==> outdated key message */ + (product << 21);
-            int param2 = rnd.Next(0xFFFF) + (expirationDate << 16);
+            int param1 = rnd.Next(0x2580, 0xFFFF) /* < 0x2580 ==> outdated key message */ + (product << 21);
+            int param2 = rnd.Next(0xFFFF) + (expirationDate << 16) /* 0 ==> no expiration */;
             if (fourthKeyPart == null)
                 for (int i = 0; i < 5; i++)
                     fourthKeyPart += charset[rnd.Next((charset.Length - 1))];
@@ -123,7 +122,7 @@ namespace ProxifierKeygen
             key += key[2]; // 15th char becomes 3rd
             key += fourthKeyPart;
             key += DecompileString((uint)value1, 5);
-            // 3rd char doesn't affect the key check, as long as not it's a 'Y' ==> Proxifier v2 key (outdated)
+            // 3rd char doesn't affect the key check, as long as it's not a 'Y' ==> Proxifier v2 key (outdated)
             char rndChar = charset[rnd.Next((charset.Length - 1))];
             if (rndChar == 'Y')
                 rndChar++;
